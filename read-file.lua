@@ -131,4 +131,12 @@ function rf.lines(file)
     end
 end
 
+--removes all temporary files created by this script
+mp.register_event("shutdown", function()
+    for _, file in ipairs(temp_files) do
+        msg.trace("removing temporary file", file)
+        os.remove(file)
+    end
+end)
+
 return rf
