@@ -10,13 +10,13 @@ This API is still extremely new, so there may be breaking changes in the future.
 
 **If you've been directed here by another script that requires this API follow these instructions unless told otherwise.**
 
-Place [user-input.lua](user-input.lua) inside the `~~/scripts/` directory, and place [user-input-module.lua](user-input-module.lua) inside the `~~/script-modules/` directory.
-Create these directories if they do not exist. `~~/` represents the mpv config directory.
+Place [read-file.lua](read-file.lua) inside the `~~/script-modules/` directory.
+Create the directory if it does not exist. `~~/` represents the mpv config directory.
 
 ### Advanced
 
-What is important is that `user-input.lua` is loaded as a script my mpv, which can be done from anywhere using the `--script` option.
-Meanwhile, `user-input-module.lua` needs to be in one of the lua package paths; scripts that use this API are recommended to use `~~/script-modules/`, but you can set any directory using the `LUA_PATH` environment variable.
+What is important is that `read-file.lua` needs to be in one of the lua package paths; scripts that use this API are recommended to use
+`~~/script-modules/`, but you can set any directory using the `LUA_PATH` environment variable.
 
 ## Installation for developers
 
