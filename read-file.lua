@@ -57,14 +57,20 @@ local function get_temp_file_handler(contents)
 
     return io.open(filename, "r")
 end
+
+--gets the protocol scheme for the given uri
+--if there is no scheme then return nil
 local function get_protocol(uri)
     return uri:match("^(%a%w*)://")
 end
 
+--returns a file handle for the given file
 local function get_local(file)
     return io.open(file, "r")
 end
 
+--gets a file using the wget commandline utility
+--retrieves the result as a string
 local function get_wget(file)
     return execute({"wget", "-O", "-", file, o.wget_flags})
 end
