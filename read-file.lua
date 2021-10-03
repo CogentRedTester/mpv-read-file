@@ -35,6 +35,7 @@ local function execute(args)
     else
         msg.warn(table.concat(args, ' '))
         msg.warn("command exitted with status code:", cmd.status)
+        msg.error(cmd.stdout)
         msg.error(cmd.stderr)
         return nil
     end
@@ -146,6 +147,9 @@ function rf.lines(file)
         end
     end
 end
+
+--if wget is not available 
+assert(execute({"wget", "-h"}), "wget not available in the system PATH")
 
 --removes all temporary files created by this script
 mp.register_event("shutdown", function()
