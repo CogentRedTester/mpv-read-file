@@ -33,11 +33,11 @@ local function execute(args)
     if (cmd.status == 0) then
         return cmd.stdout
     else
-        msg.warn(table.concat(args, ' '))
-        msg.warn("command exitted with status code:", cmd.status)
-        msg.error(cmd.stdout)
-        msg.error(cmd.stderr)
-        return nil
+        local err = table.concat(args, ' ')..'\n'
+            .."command exitted with status code: "..cmd.status..'\n'
+            ..cmd.stderr
+
+        return nil, err
     end
 end
 
@@ -104,8 +104,8 @@ local function get_file(file, as_string)
         get_method = protocols[protocol] or get_wget
     end
 
-    local contents = get_method(path)
-    if not contents or as_string == nil then return contents end
+    local contents, err = get_method(path)
+    if not contents or as_string == nil then return contents, err end
 
     --converts the result of the get function into the correct output type - either a string or a file handle
     if as_string and io.type(contents) then
@@ -116,7 +116,7 @@ local function get_file(file, as_string)
         contents = get_temp_file_handler(contents)
     end
 
-    return contents
+    return contents, err
 end
 
 --returns a file handler for the given file
@@ -134,8 +134,11 @@ end
 --if the return value is a file handle then close the file once EOF is reached, like when using io.lines()
 --if the return value is a string then return a string.gmatch iterator for each line
 function rf.lines(file)
-    local contents = get_file(file)
-    if not contents then return function() return nil end end
+    local contents, err = get_file(file)
+    if not contents then
+        msg.error(err)
+        return function() return nil end
+    end
 
     if type(contents) == "string" then
         return string.gmatch(contents, "[^\n\r]+")

@@ -36,7 +36,9 @@ local rf = require "read-file
 
 This function takes a uri and returns a string consisting of the entire contents of the file.
 This uri can be a relative path for a local file, as well as an absolute path for a global or network
-file. If the given file cannot be read the function returns `nil`.
+file.
+
+If the given file cannot be read the function returns `nil` and an error message is returned as a second return value.
 
 If the given file is not a text file then the behaviour is undefined.
 
@@ -47,7 +49,8 @@ The user will then be responsible for closing the file.
 If the uri is for a network file then the script may create a temporary local file and provide a file
 handle for that local file. All temporary files are removed during mpv's shutdown.
 
-If the uri could not be opened or written to the temporary file, then the function returns `nil`.
+If the uri could not be opened or written to the temporary file, then the function returns `nil`, and
+an error message as the second return value
 
 If the given file is not a text file then the behaviour is undefined.
 
