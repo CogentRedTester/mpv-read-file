@@ -9,7 +9,7 @@ local utils = require "mp.utils"
 local opts = require "mp.options"
 
 local o = {
-    wget_flags = ""
+    wget_opts = ""
 }
 
 opts.read_options(o, "read_file")
@@ -21,6 +21,7 @@ local temp_files = {}
 local PLATFORM_WINDOWS = mp.get_property_native('options/vo-mmcss-profile', o) ~= o
 
 local function execute(args)
+    msg.debug("executing command:", table.concat(args, " "))
     local cmd = mp.command_native({
         name = "subprocess",
         playback_only = false,
@@ -72,7 +73,11 @@ end
 --gets a file using the wget commandline utility
 --retrieves the result as a string
 local function get_wget(file)
-    return execute({"wget", "-O", "-", file, o.wget_flags})
+    local args = {"wget", "-O", "-", file}
+    for arg in o.wget_opts:gmatch("%S+") do
+        table.insert(args, arg)
+    end
+    return execute(args)
 end
 
 --tracks what functions should be used for specific protocols
