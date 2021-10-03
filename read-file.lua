@@ -15,6 +15,26 @@ opts.read_options(o, "read_file")
 
 local rf = {}
 
+
+local function execute(args)
+    local cmd = mp.command_native({
+        name = "subprocess",
+        playback_only = false,
+        capture_stdout = true,
+        capture_stderr = true,
+        args = args
+    })
+
+    if (cmd.status == 0) then
+        return cmd.stdout
+    else
+        msg.warn(table.concat(args, ' '))
+        msg.warn("command exitted with status code:", cmd.status)
+        msg.error(cmd.stderr)
+        return nil
+    end
+end
+
 local function get_protocol(uri)
     return uri:match("^(%a%w*)://")
 end
