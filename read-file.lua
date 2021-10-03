@@ -93,7 +93,7 @@ local function get_file(file, as_string)
     end
 
     local contents = get_method(path)
-    if not contents or as_string == nil then return nil end
+    if not contents or as_string == nil then return contents end
 
     --converts the result of the get function into the correct output type - either a string or a file handle
     if as_string and io.type(contents) then
@@ -118,16 +118,21 @@ function rf.read_file(file)
     return get_file(file, true)
 end
 
---returns an iterator for the lines in the file, which closes the file once EOF is reached
---this is the same as using io.lines()
+--returns an iterator for the lines in the file
+--if the return value is a file handle then close the file once EOF is reached, like when using io.lines()
+--if the return value is a string then return a string.gmatch iterator for each line
 function rf.lines(file)
-    local handler = rf.get_file_handler(file)
-    if not handler then return nil end
+    local contents = get_file(file)
+    if not contents then return function() return nil end end
 
-    return function()
-        local line = handler:read("*l")
-        if not line then handler:close() end
-        return line
+    if type(contents) == "string" then
+        return string.gmatch(contents, "[^\n\r]+")
+    else
+        return function()
+            local line = contents:read("*l")
+            if not line then contents:close() end
+            return line
+        end
     end
 end
 
